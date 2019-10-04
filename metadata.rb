@@ -1,0 +1,8 @@
+name 'wgud085'
+maintainer 'The Authors'
+maintainer_email 'you@example.com'
+license 'All Rights Reserved'
+description 'Installs/Configures wgud085'
+long_description 'Installs/Configures wgud085'
+version '0.1.0'
+chef_version '>= 14.0'

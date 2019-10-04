@@ -1,0 +1,120 @@
+---
+driver:
+  name: vagrant
+  network:
+    - ["private_network", { type: "dhcp" }]
+
+# driver:
+#   name: ec2
+#   aws_ssh_key_id: MyAWSKeyPair
+#   region: us-east-2
+#   availability_zone: b
+#   subnet_id: subnet-f46f388e
+#   instance_type: t2.micro
+#   image_id: ami-08ee2516c7709ea48
+#   security_group_ids: ["sg-ccd501ae"]
+#   retryable_tries: 120
+
+provisioner:
+  name: chef_zero
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-7
+
+transport:
+  ssh_key: sshfiles/MyAWSKeyPair.pem
+  username: centos
+  connection_timeout: 10
+  connection_retries: 5
+
+suites:
+  - name: base_core
+    provisioner:
+      named_run_list: base_core
+    verifier:                      
+      inspec_tests:                 
+        - test/integration/base_core   
+    attributes:
+    tags:
+      Name: 'Base-Game-Core'
+      Cluster: 'Base'
+
+  - name: base_web_front_end
+    provisioner:
+      named_run_list: web_front_end
+    verifier:
+      inspec_tests:
+        - test/integration/web_front_end
+    attributes:
+    tags:
+      Name: 'Base-Game-Frontend'
+      Cluster: 'Base'
+
+  - name: base_web_back_end
+    provisioner:
+      named_run_list: web_back_end
+    verifier:
+      inspec_tests:
+        - test/integration/web_back_end
+    attributes:
+    tags:
+      Name: 'Base-Game-Backend'
+      Cluster: 'Base'
+
+  - name: base_database
+    provisioner:
+      named_run_list: database
+    verifier:
+      inspec_tests:
+        - test/integration/database
+    attributes:
+    tags:
+      Name: 'Base-Game-Database'
+      Cluster: 'Base'
+
+  - name: base_micro_payment_server
+    provisioner:
+      named_run_list: micro_payment_server
+    verifier:
+      inspec_tests:
+        - test/integration/micro_payment_server
+    attributes:
+    tags:
+      Name: 'Game-Micropayment-Server'
+      Cluster: 'Base'
+
+  - name: coop_core
+    provisioner:
+      named_run_list: coop_core
+    verifier:
+      inspec_tests:
+        - test/integration/coop_core
+    attributes:
+    tags:
+      Name: 'Coop-Core'
+      Cluster: 'Coop'
+
+  - name: coop_gateway
+    provisioner:
+      named_run_list: coop_gateway
+    verifier:
+      inspec_tests:
+        - test/integration/coop_gateway
+    attributes:
+    tags:
+      Name: 'Coop-Gateway'
+      Cluster: 'Coop'
+
+  - name: coop_environment
+    provisioner:
+      named_run_list: coop_environment
+    verifier:
+      inspec_tests:
+        - test/integration/coop_environment
+    attributes:
+    tags:
+      Name: 'Coop-Env'
+      Cluster: 'Coop'
